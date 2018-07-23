@@ -98,6 +98,7 @@ struct ServiceReg<'a> {
 }
 
 /// Address of service executable code.
+#[derive(Clone, Copy)]
 pub struct ServiceAddr {
 
     addr        : usize,
@@ -179,5 +180,12 @@ impl From<usize> for ServiceAddr {
 
     fn from(addr: usize) -> Self {
         ServiceAddr { addr }
+    }
+}
+
+impl Into<usize> for ServiceAddr {
+
+    fn into(self) -> usize {
+        self.addr
     }
 }
