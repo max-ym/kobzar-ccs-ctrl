@@ -1,10 +1,10 @@
 [package]
-name = "kobzar-ccs-ctrl"
+name = "kobzar_ccs_ctrl"
 version = "0.1.0"
 authors = ["Maxym Naumchyk <max.naumch@gmail.com>"]
 
 [dependencies]
 
 [lib]
-name = "kobzar-ccs-ctrl"
+name = "kobzar_ccs_ctrl"
 path = "lib.rs"

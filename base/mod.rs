@@ -1,8 +1,10 @@
+use std::collections::HashMap;
+
 /// Network object. An implementation of some interfaces. It has it's own
 /// name. It is located in some other network and has internal network in
 /// itself. The object has it's unique ID which allows to distinguish objects
 /// with same names and locations.
-pub struct Object {
+pub struct Object<'a> {
 
     /// Object unique identifier in it's network level.
     id          : u32,
@@ -12,13 +14,13 @@ pub struct Object {
 
     /// Parent object if any. If this is the highest object in the hierarchy
     /// the field will have None value.
-    parent      : Option<&Object>,
+    parent      : Option<&'a Object<'a>>,
 
     /// Services implemented by the object at current network level.
-    services    : ServiceReg,
+    services    : ServiceReg<'a>,
 
     /// Internal object network registry.
-    registry    : Registry,
+    registry    : Registry<'a>,
 }
 
 /// Interface with given set of services. Gives information about interface
@@ -77,22 +79,22 @@ pub enum Visibility {
 
 /// Service implementation in the exact object. Contains all the information
 /// required to run the service.
-pub struct ServiceImpl {
+pub struct ServiceImpl<'a> {
 
     /// Basic information about the service.
-    base        : &Service,
+    base        : &'a Service,
 
     addr        : ServiceAddr,
 }
 
 /// Service registry.
-struct ServiceReg {
+struct ServiceReg<'a> {
 
-    pub private     : ServiceHashMap,
+    pub private     : ServiceHashMap<'a>,
 
-    pub internal    : ServiceHashMap,
+    pub internal    : ServiceHashMap<'a>,
 
-    pub public      : ServiceHashMap,
+    pub public      : ServiceHashMap<'a>,
 }
 
 /// Address of service executable code.
@@ -122,25 +124,25 @@ pub struct ServiceVersion {
     minor   : u32,
 }
 
-struct ObjectHashMap {
+struct ObjectHashMap<'a> {
 
-    pub map     : HashMap<&str, Object>,
+    pub map     : HashMap<&'a str, Object<'a>>,
 }
 
-struct ServiceHashMap {
+struct ServiceHashMap<'a> {
 
-    pub map     : HashMap<&str, ServiceImpl>,
+    pub map     : HashMap<&'a str, ServiceImpl<'a>>,
 }
 
 /// Registry with all network objects in it. Registry is a root network object
 /// that hold all other objects in the network environment.
-struct Registry {
+struct Registry<'a> {
 
-    pub pub_obj     : ObjectHashMap,
+    pub pub_obj     : ObjectHashMap<'a>,
 
-    pub int_obj     : ObjectHashMap,
+    pub int_obj     : ObjectHashMap<'a>,
 
-    pub priv_obj    : ObjectHashMap,
+    pub priv_obj    : ObjectHashMap<'a>,
 }
 
 impl ServiceVersion {
@@ -161,7 +163,7 @@ impl ServiceVersion {
 impl InterfaceVersion {
 
     pub fn new(major: u32, minor: u32) -> Self {
-        ServiceVersion { major, minor }
+        InterfaceVersion { major, minor }
     }
 
     pub fn major(&self) -> u32 {
