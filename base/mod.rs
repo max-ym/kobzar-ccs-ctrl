@@ -136,11 +136,11 @@ struct ServiceHashMap {
 /// that hold all other objects in the network environment.
 struct Registry {
 
-    pub_obj     : ObjectHashMap,
+    pub pub_obj     : ObjectHashMap,
 
-    int_obj     : ObjectHashMap,
+    pub int_obj     : ObjectHashMap,
 
-    priv_obj    : ObjectHashMap,
+    pub priv_obj    : ObjectHashMap,
 }
 
 impl ServiceVersion {
