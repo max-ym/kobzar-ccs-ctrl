@@ -88,6 +88,7 @@ pub struct ServiceImpl<'a> {
 }
 
 /// Service registry.
+#[derive(Default)]
 struct ServiceReg<'a> {
 
     pub private     : ServiceHashMap<'a>,
@@ -125,11 +126,13 @@ pub struct ServiceVersion {
     minor   : u32,
 }
 
+#[derive(Default)]
 struct ObjectHashMap<'a> {
 
     pub map     : HashMap<&'a str, Object<'a>>,
 }
 
+#[derive(Default)]
 struct ServiceHashMap<'a> {
 
     pub map     : HashMap<&'a str, ServiceImpl<'a>>,
@@ -137,6 +140,7 @@ struct ServiceHashMap<'a> {
 
 /// Registry with all network objects in it. Registry is a root network object
 /// that hold all other objects in the network environment.
+#[derive(Default)]
 struct Registry<'a> {
 
     pub pub_obj     : ObjectHashMap<'a>,
@@ -187,5 +191,19 @@ impl Into<usize> for ServiceAddr {
 
     fn into(self) -> usize {
         self.addr
+    }
+}
+
+impl<'a> Object<'a> {
+
+    pub fn new(id: u32, name: String, parent: Option<&'a Object>)
+            -> Object<'a> {
+        Object {
+            id,
+            name,
+            parent,
+            services: Default::default(),
+            registry: Default::default(),
+        }
     }
 }
