@@ -174,3 +174,10 @@ impl InterfaceVersion {
         self.minor
     }
 }
+
+impl From<usize> for ServiceAddr {
+
+    fn from(addr: usize) -> Self {
+        ServiceAddr { addr }
+    }
+}
