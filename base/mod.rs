@@ -142,3 +142,19 @@ struct Registry {
 
     priv_obj    : ObjectHashMap,
 }
+
+impl ServiceVersion {
+
+    pub fn new(major: u32, minor: u32) -> Self {
+        ServiceVersion { major, minor }
+    }
+
+    pub fn major(&self) -> u32 {
+        self.major
+    }
+
+    pub fn minor(&self) -> u32 {
+        self.minor
+    }
+}
+
