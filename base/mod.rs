@@ -127,16 +127,26 @@ pub struct ServiceVersion {
     minor   : u32,
 }
 
+/// Hash created to map the object by it's name.
+#[derive(PartialEq, Eq, Hash)]
+struct ObjectHash {
+}
+
+/// Hash created to map the service by it's name.
+#[derive(PartialEq, Eq, Hash)]
+struct ServiceHash {
+}
+
 #[derive(Default)]
 struct ObjectHashMap {
 
-    pub map     : HashMap<*const String, Object>,
+    pub map     : HashMap<ObjectHash, Object>,
 }
 
 #[derive(Default)]
 struct ServiceHashMap {
 
-    pub map     : HashMap<*const String, ServiceImpl>,
+    pub map     : HashMap<ServiceHash, ServiceImpl>,
 }
 
 /// Registry with all network objects in it. Registry is a root network object
