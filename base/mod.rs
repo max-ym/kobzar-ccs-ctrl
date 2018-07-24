@@ -410,6 +410,7 @@ impl Eq for Interface {}
 
 impl ObjectHandle {
 
+    /// Create new ObjectHandle for given object on the heap.
     pub fn new(obj: Box<Object>) -> Self {
         let rc;
 
@@ -421,10 +422,13 @@ impl ObjectHandle {
         ObjectHandle { rc }
     }
 
+    /// Save the object on the heap and retrieve its ObjectHandle.
     pub fn wrap(obj: Object) -> Self {
         ObjectHandle::new(Box::new(obj))
     }
 
+    /// Create new object with given name and visibility. For more information
+    /// see <a href="./struct.Registry.html#method.add_object">add_object</a>.
     pub fn create_new_object(&mut self, name: String, visibility: Visibility)
             -> ObjectHandle {
         let parent_rc = self.rc.clone();
@@ -435,25 +439,35 @@ impl ObjectHandle {
 
 impl Registry {
 
+    /// Add new object to the registry. Visibility is set to a given value.
+    /// Object will have no sub-objects nor services. They can be added
+    /// later as needed by the returned ObjectHandle.
     pub fn add_object(&mut self, name: String, visibility: Visibility,
             parent_rc: Rc<Object>) -> ObjectHandle {
         use Visibility::*;
 
+        // Create new object and set current as a parent by transfering
+        // Rc of this object.
         let obj = Object::new(
                 self.new_obj_id,
                 name,
                 Some(parent_rc),
             );
 
+        // Generate hash to add the object to appropriate HashMap.
         let hash = ObjectHash::from_obj(&obj);
+
+        // Load Object to the heap and retrieve its ObjectHandle.
         let objh = ObjectHandle::wrap(obj);
 
+        // Save the object in appropriate HashMap.
         match visibility {
             Public      => self.pub_obj.map.insert(hash, objh.clone()),
             Internal    => self.int_obj.map.insert(hash, objh.clone()),
             Private     => self.priv_obj.map.insert(hash, objh.clone()),
         };
 
+        // Update ID counter.
         self.new_obj_id += 1;
 
         objh
