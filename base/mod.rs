@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::LinkedList;
 use std::rc::Rc;
 
 /// Network object. An implementation of some interfaces. It has it's own
@@ -24,6 +25,17 @@ pub struct Object {
     registry    : Registry,
 }
 
+/// Vendor name and full path to the interface package.
+pub struct InterfacePath {
+
+    /// Name of the package at current level.
+    name        : String,
+
+    /// Higher level of this path hierarchy. If current node is at top this
+    /// field is None.
+    parent      : Option<Rc<InterfacePath>>,
+}
+
 /// Interface with given set of services. Gives information about interface
 /// vendor, version, services and sub-interfaces in it. Also gives information
 /// about required interface implementations in order to allow object implement
@@ -31,7 +43,7 @@ pub struct Object {
 pub struct Interface {
 
     /// Vendor of this interface.
-    vendor      : String,
+    vendor      : InterfacePath,
 
     /// Name of this interface.
     name        : String,
@@ -50,6 +62,16 @@ pub struct Interface {
     /// All interfaces that must be implemented by the object that wishes to
     /// implement this interface.
     require     : Vec<Interface>,
+}
+
+/// Set of interface implementers.
+pub struct InterfaceImplementers {
+
+    /// Interface being implemented.
+    interface   : Rc<Interface>,
+
+    /// Objects that implement this interface.
+    objects     : LinkedList<Rc<Object>>,
 }
 
 /// Detailed information about service. It's parent interface, name, version
@@ -153,14 +175,25 @@ pub struct ServiceHashMap {
 
 /// Registry with all network objects in it. Registry is a root network object
 /// that hold all other objects in the network environment.
-#[derive(Default)]
 struct Registry {
 
+    /// Public objects.
     pub pub_obj     : ObjectHashMap,
 
+    /// Internal objects.
     pub int_obj     : ObjectHashMap,
 
+    /// Private objects.
     pub priv_obj    : ObjectHashMap,
+
+    /// Public interface implementers.
+    pub pub_obj_int : InterfaceImplementers,
+
+    /// Internal interface implementers.
+    pub int_obj_int : InterfaceImplementers,
+
+    /// Private interface implementers.
+    pub priv_obj_int: InterfaceImplementers,
 }
 
 impl ServiceVersion {
