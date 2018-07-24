@@ -90,7 +90,7 @@ pub struct ServiceImpl {
 
 /// Service registry.
 #[derive(Default)]
-struct ServiceReg {
+pub struct ServiceReg {
 
     pub private     : ServiceHashMap,
 
@@ -129,24 +129,24 @@ pub struct ServiceVersion {
 
 /// Hash created to map the object by it's name.
 #[derive(PartialEq, Eq, Hash)]
-struct ObjectHash {
+pub struct ObjectHash {
     val     : u64,
 }
 
 /// Hash created to map the service by it's name.
 #[derive(PartialEq, Eq, Hash)]
-struct ServiceHash {
+pub struct ServiceHash {
     val     : u64,
 }
 
 #[derive(Default)]
-struct ObjectHashMap {
+pub struct ObjectHashMap {
 
     pub map     : HashMap<ObjectHash, Object>,
 }
 
 #[derive(Default)]
-struct ServiceHashMap {
+pub struct ServiceHashMap {
 
     pub map     : HashMap<ServiceHash, ServiceImpl>,
 }
@@ -258,5 +258,25 @@ impl Object {
             services: Default::default(),
             registry: Default::default(),
         }
+    }
+
+    pub fn name(&self) -> &String {
+        &self.name
+    }
+
+    pub fn id(&self) -> u32 {
+        self.id
+    }
+
+    pub fn parent(&self) -> Option<Rc<Object>> {
+        self.parent.clone()
+    }
+
+    pub fn services(&self) -> &ServiceReg {
+        &self.services
+    }
+
+    pub fn services_mut(&mut self) -> &mut ServiceReg {
+        &mut self.services
     }
 }
