@@ -173,8 +173,15 @@ pub struct ServiceHashMap {
     pub map     : HashMap<ServiceHash, ServiceImpl>,
 }
 
+#[derive(Default)]
+pub struct ImplementersVec {
+
+    pub im  : Vec<InterfaceImplementers>,
+}
+
 /// Registry with all network objects in it. Registry is a root network object
 /// that hold all other objects in the network environment.
+#[derive(Default)]
 struct Registry {
 
     /// Public objects.
@@ -187,13 +194,13 @@ struct Registry {
     pub priv_obj    : ObjectHashMap,
 
     /// Public interface implementers.
-    pub pub_obj_int : InterfaceImplementers,
+    pub pub_obj_int : ImplementersVec,
 
     /// Internal interface implementers.
-    pub int_obj_int : InterfaceImplementers,
+    pub int_obj_int : ImplementersVec,
 
     /// Private interface implementers.
-    pub priv_obj_int: InterfaceImplementers,
+    pub priv_obj_int: ImplementersVec,
 }
 
 impl ServiceVersion {
