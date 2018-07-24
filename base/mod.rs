@@ -26,6 +26,13 @@ pub struct Object {
     registry    : Registry,
 }
 
+/// Handle of registered object.
+#[derive(Clone)]
+pub struct ObjectHandle {
+
+    rc      : Rc<Object>,
+}
+
 /// Vendor name and full path to the interface package.
 #[derive(Clone, Hash, PartialEq, Eq)]
 pub struct InterfacePath {
@@ -169,7 +176,7 @@ pub struct ServiceHash {
 #[derive(Default)]
 pub struct ObjectHashMap {
 
-    pub map     : HashMap<ObjectHash, Object>,
+    pub map     : HashMap<ObjectHash, ObjectHandle>,
 }
 
 #[derive(Default)]
@@ -400,3 +407,55 @@ impl PartialEq for Interface {
 }
 
 impl Eq for Interface {}
+
+impl ObjectHandle {
+
+    pub fn new(obj: Box<Object>) -> Self {
+        let rc;
+
+        unsafe {
+            let ptr = Box::into_raw(obj);
+            rc = Rc::from_raw(ptr);
+        }
+
+        ObjectHandle { rc }
+    }
+
+    pub fn wrap(obj: Object) -> Self {
+        ObjectHandle::new(Box::new(obj))
+    }
+
+    pub fn create_new_object(&mut self, name: String, visibility: Visibility)
+            -> ObjectHandle {
+        let parent_rc = self.rc.clone();
+        let obj = Rc::get_mut(&mut self.rc).unwrap();
+        obj.registry.add_object(name, visibility, parent_rc)
+    }
+}
+
+impl Registry {
+
+    pub fn add_object(&mut self, name: String, visibility: Visibility,
+            parent_rc: Rc<Object>) -> ObjectHandle {
+        use Visibility::*;
+
+        let obj = Object::new(
+                self.new_obj_id,
+                name,
+                Some(parent_rc),
+            );
+
+        let hash = ObjectHash::from_obj(&obj);
+        let objh = ObjectHandle::wrap(obj);
+
+        match visibility {
+            Public      => self.pub_obj.map.insert(hash, objh.clone()),
+            Internal    => self.int_obj.map.insert(hash, objh.clone()),
+            Private     => self.priv_obj.map.insert(hash, objh.clone()),
+        };
+
+        self.new_obj_id += 1;
+
+        objh
+    }
+}
