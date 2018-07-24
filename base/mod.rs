@@ -130,11 +130,13 @@ pub struct ServiceVersion {
 /// Hash created to map the object by it's name.
 #[derive(PartialEq, Eq, Hash)]
 struct ObjectHash {
+    val     : u64,
 }
 
 /// Hash created to map the service by it's name.
 #[derive(PartialEq, Eq, Hash)]
 struct ServiceHash {
+    val     : u64,
 }
 
 #[derive(Default)]
@@ -202,6 +204,24 @@ impl Into<usize> for ServiceAddr {
 
     fn into(self) -> usize {
         self.addr
+    }
+}
+
+impl ObjectHash {
+
+    /// Generate object name hash from given string.
+    pub fn from_str(s: &String) -> Self {
+        use std::hash::{Hash, Hasher};
+        use std::collections::hash_map::DefaultHasher;
+
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        ObjectHash { val : hasher.finish() }
+    }
+
+    /// Generate object name hash for given object.
+    pub fn from_obj(o: &Object) -> Self {
+        Self::from_str(&o.name)
     }
 }
 
