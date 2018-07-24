@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::collections::LinkedList;
+use std::hash::{Hash, Hasher};
 use std::rc::Rc;
 
 /// Network object. An implementation of some interfaces. It has it's own
@@ -22,11 +23,11 @@ pub struct Object {
     services    : ServiceReg,
 
     /// Internal object network registry.
-    registry    : g,
+    registry    : Registry,
 }
 
 /// Vendor name and full path to the interface package.
-#[derive(Clone)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct InterfacePath {
 
     /// Name of the package at current level.
@@ -54,15 +55,15 @@ pub struct Interface {
 
     /// Services contained by the interface. All listed services must be
     /// public.
-    services    : Vec<Service>,
+    services    : Vec<Rc<Service>>,
 
     /// Subinterfaces required to be located inside of this interface.
     /// Interfaces must be public.
-    subints     : Vec<Interface>,
+    subints     : Vec<Rc<Interface>>,
 
     /// All interfaces that must be implemented by the object that wishes to
     /// implement this interface.
-    require     : Vec<Interface>,
+    require     : Vec<Rc<Interface>>,
 }
 
 /// Set of interface implementers.
@@ -134,7 +135,7 @@ pub struct ServiceAddr {
 /// the interface. Objects that require specific major version must seek
 /// for implementer with given major version. Object can connect to the
 /// implementer with equal or greater minor number.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct InterfaceVersion {
 
     major   : u32,
@@ -354,27 +355,48 @@ impl Interface {
         &self.version
     }
 
-    pub fn services(&self) -> &Vec<Service> {
+    pub fn services(&self) -> &Vec<Rc<Service>> {
         &self.services
     }
 
-    pub fn services_mut(&mut self) -> &mut Vec<Service> {
+    pub fn services_mut(&mut self) -> &mut Vec<Rc<Service>> {
         &mut self.services
     }
 
-    pub fn subinterfaces(&self) -> &Vec<Interface> {
+    pub fn subinterfaces(&self) -> &Vec<Rc<Interface>> {
         &self.subints
     }
 
-    pub fn subinterfaces_mut(&mut self) -> &mut Vec<Interface> {
+    pub fn subinterfaces_mut(&mut self) -> &mut Vec<Rc<Interface>> {
         &mut self.subints
     }
 
-    pub fn required_interfaces(&self) -> &Vec<Interface> {
+    pub fn required_interfaces(&self) -> &Vec<Rc<Interface>> {
         &self.require
     }
 
-    pub fn required_interfaces_mut(&mut self) -> &mut Vec<Interface> {
+    pub fn required_interfaces_mut(&mut self) -> &mut Vec<Rc<Interface>> {
         &mut self.require
     }
 }
+
+impl Hash for Interface {
+
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.vendor.hash(state);
+        self.name.hash(state);
+    }
+}
+
+impl PartialEq for Interface {
+
+    fn eq(&self, other: &Interface) -> bool {
+        if self.vendor != other.vendor {
+            false
+        } else {
+            self.name == other.name && self.version == other.version
+        }
+    }
+}
+
+impl Eq for Interface {}
