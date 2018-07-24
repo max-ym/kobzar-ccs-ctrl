@@ -241,6 +241,10 @@ impl ServiceHash {
     pub fn from_srv(s: &Service) -> Self {
         Self::from_str(&s.name)
     }
+
+    pub fn from_srv_impl(s: &ServiceImpl) -> Self {
+        Self::from_srv(&s.base)
+    }
 }
 
 impl Object {
