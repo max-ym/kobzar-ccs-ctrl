@@ -225,6 +225,24 @@ impl ObjectHash {
     }
 }
 
+impl ServiceHash {
+
+    /// Generate service name hash from given string.
+    pub fn from_str(s: &String) -> Self {
+        use std::hash::{Hash, Hasher};
+        use std::collections::hash_map::DefaultHasher;
+
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        ServiceHash { val : hasher.finish() }
+    }
+
+    /// Generate service name hash for given object.
+    pub fn from_srv(s: &Service) -> Self {
+        Self::from_str(&s.name)
+    }
+}
+
 impl Object {
 
     pub fn new(id: u32, name: String, parent: Option<Rc<Object>>)
