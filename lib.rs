@@ -58,3 +58,25 @@ impl Default for InterfaceMap {
         }
     }
 }
+
+impl InterfaceMapMaster {
+
+    /// Add interface to the map.
+    pub fn add_interface(&mut self, interface: Interface) -> Rc<Interface> {
+        let map = self.create_path(interface.vendor());
+        let rc = Rc::new(interface);
+        map.ints.insert(rc.clone());
+        rc
+    }
+
+    /// Create (open) the path needed to locate some interface and get
+    /// reference to the InterfaceMap at the end of the path.
+    ///
+    /// # Warning
+    /// Must be called from the CCS root InterfaceMap, otherwise the path
+    /// will be built relatively to the current node but not as
+    /// absolute path.
+    fn create_path(&mut self, path: &InterfacePath) -> &mut InterfaceMap {
+        unimplemented!()
+    }
+}
