@@ -22,10 +22,11 @@ pub struct Object {
     services    : ServiceReg,
 
     /// Internal object network registry.
-    registry    : Registry,
+    registry    : g,
 }
 
 /// Vendor name and full path to the interface package.
+#[derive(Clone)]
 pub struct InterfacePath {
 
     /// Name of the package at current level.
@@ -85,6 +86,7 @@ pub struct Service {
 }
 
 /// Visibility of network element.
+#[derive(Clone, Copy)]
 pub enum Visibility {
 
     /// Object is visible from the upper level network and from lower level
@@ -132,6 +134,7 @@ pub struct ServiceAddr {
 /// the interface. Objects that require specific major version must seek
 /// for implementer with given major version. Object can connect to the
 /// implementer with equal or greater minor number.
+#[derive(Clone, Copy)]
 pub struct InterfaceVersion {
 
     major   : u32,
@@ -142,6 +145,7 @@ pub struct InterfaceVersion {
 /// Implemented service interface version. Different major versions are
 /// not compatible. Lower or equal required minor version allows to make a
 /// call for the service from the calling object.
+#[derive(Clone, Copy)]
 pub struct ServiceVersion {
 
     major   : u32,
@@ -150,13 +154,13 @@ pub struct ServiceVersion {
 }
 
 /// Hash created to map the object by it's name.
-#[derive(PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub struct ObjectHash {
     val     : u64,
 }
 
 /// Hash created to map the service by it's name.
-#[derive(PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub struct ServiceHash {
     val     : u64,
 }
@@ -192,6 +196,9 @@ struct Registry {
 
     /// Private objects.
     pub priv_obj    : ObjectHashMap,
+
+    /// ID to be assigned to newly created sub-objects.
+    pub new_obj_id  : u32,
 
     /// Public interface implementers.
     pub pub_obj_int : ImplementersVec,
@@ -333,5 +340,41 @@ impl Interface {
             subints: Default::default(),
             require: Default::default(),
         }
+    }
+
+    pub fn vendor(&self) -> &InterfacePath {
+        &self.vendor
+    }
+
+    pub fn name(&self) -> &String {
+        &self.name
+    }
+
+    pub fn version(&self) -> &InterfaceVersion {
+        &self.version
+    }
+
+    pub fn services(&self) -> &Vec<Service> {
+        &self.services
+    }
+
+    pub fn services_mut(&mut self) -> &mut Vec<Service> {
+        &mut self.services
+    }
+
+    pub fn subinterfaces(&self) -> &Vec<Interface> {
+        &self.subints
+    }
+
+    pub fn subinterfaces_mut(&mut self) -> &mut Vec<Interface> {
+        &mut self.subints
+    }
+
+    pub fn required_interfaces(&self) -> &Vec<Interface> {
+        &self.require
+    }
+
+    pub fn required_interfaces_mut(&mut self) -> &mut Vec<Interface> {
+        &mut self.require
     }
 }
