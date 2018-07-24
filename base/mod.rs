@@ -320,3 +320,18 @@ impl Object {
         &mut self.services
     }
 }
+
+impl Interface {
+
+    pub fn new(vendor: InterfacePath, name: String, version: InterfaceVersion)
+            -> Self {
+        Interface {
+            vendor,
+            name,
+            version,
+            services: Default::default(),
+            subints: Default::default(),
+            require: Default::default(),
+        }
+    }
+}
