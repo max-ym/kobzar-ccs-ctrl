@@ -41,7 +41,7 @@ pub trait ImplementerLoader {
     /// Look for given interface implementers in this source. All found
     /// objects are collected into single structure. Master can decide
     /// which of found objects to load into the network.
-fn find_implementer(&mut self);
+    fn find_implementer(&mut self);
 }
 
 impl Master {
