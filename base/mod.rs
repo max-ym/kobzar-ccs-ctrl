@@ -75,6 +75,11 @@ impl ObjectTransaction {
         unimplemented!()
     }
 
+    /// Add service and set it's visibility to given value.
+    pub fn add_service(&mut self) {
+        unimplemented!()
+    }
+
     pub fn remove_public_service(&mut self) {
         unimplemented!()
     }
@@ -87,8 +92,57 @@ impl ObjectTransaction {
         unimplemented!()
     }
 
+    /// Change visibility of given service. If service initial visibility
+    /// isn't passed then all lists will be checked to find requested service
+    /// and then the visibility will be changed.
+    pub fn change_service_access(&mut self) {
+        unimplemented!()
+    }
+
+    /// Create new public sub-object.
+    pub fn new_public_sub_object(&mut self) {
+        unimplemented!()
+    }
+
+    /// Create new internal sub-object.
+    pub fn new_internal_sub_object(&mut self) {
+        unimplemented!()
+    }
+
+    /// Create new private sub-object.
+    pub fn new_private_sub_object(&mut self) {
+        unimplemented!()
+    }
+
+    /// Delete private sub-object.
+    pub fn remove_private_sub_object(&mut self) {
+        unimplemented!()
+    }
+
+    /// Delete internal sub-object.
+    pub fn remove_internal_sub_object(&mut self) {
+        unimplemented!()
+    }
+
+    /// Delete public sub-object.
+    pub fn remove_public_sub_object(&mut self) {
+        unimplemented!()
+    }
+
+    /// Change the visibility of sub-object from given value to new value.
+    /// If initial value is not passed then every list of objects will be
+    /// checked to find it and change the visibility to appropriate.
+    pub fn change_sub_object_access(&mut self) {
+        unimplemented!()
+    }
+
     /// Mark this object as interface implementer.
     pub fn implement_interface(&mut self) {
+        unimplemented!()
+    }
+
+    /// Tell this object now doesn't implement given interface.
+    pub fn unimplemente_interface(&mut self) {
         unimplemented!()
     }
 }
