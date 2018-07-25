@@ -28,6 +28,9 @@ pub trait InterfaceLoader {
     /// are collected into single structure. Master can decide which
     /// of found interfaces to load into the network.
     fn find_interface(&mut self);
+
+    /// Look for given package with interfaces.
+    fn find_package(&mut self);
 }
 
 /// Source of interface implementers. When network needs to load new
