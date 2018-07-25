@@ -46,8 +46,8 @@ pub trait ImplementerLoader {
 
 impl Master {
 
-    /// Start a new transaction.
-    pub fn start_transaction(&mut self) -> Transaction {
+    /// Apply changes of the transaction.
+    pub fn apply_transaction(&mut self) {
         unimplemented!()
     }
 
@@ -94,6 +94,11 @@ impl Master {
 
 impl Transaction {
 
+    /// Start new transaction.
+    pub fn new() {
+        unimplemented!()
+    }
+
     /// Register new object in the network.
     pub fn new_object(&mut self) {
         unimplemented!()
@@ -121,11 +126,6 @@ impl Transaction {
 
     /// Remove given service.
     pub fn remove_service(&mut self) {
-        unimplemented!()
-    }
-
-    /// Commit all changes.
-    pub fn commit(self) {
         unimplemented!()
     }
 }
