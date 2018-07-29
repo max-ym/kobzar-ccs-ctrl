@@ -146,3 +146,33 @@ impl ObjectTransaction {
         unimplemented!()
     }
 }
+
+impl Interface {
+
+    /// Package where this interface is located.
+    pub fn package(&self) {
+        unimplemented!()
+    }
+
+    /// The name of the interface as it appear in the package.
+    pub fn name(&self) {
+        unimplemented!()
+    }
+
+    /// The version of this interface.
+    pub fn version(&self) {
+        unimplemented!()
+    }
+
+    /// List with all services that must be implemented by this interface
+    /// implementer. This exludes the services of dependent interfaces.
+    pub fn services(&self) {
+        unimplemented!()
+    }
+
+    /// List of dependent interfaces that must be implemented in order to
+    /// allow implementing this interface.
+    pub fn dependency(&self) {
+        unimplemented!()
+    }
+}
