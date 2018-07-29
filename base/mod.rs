@@ -176,3 +176,11 @@ impl Interface {
         unimplemented!()
     }
 }
+
+impl Package {
+
+    /// The absolute path to this package.
+    pub fn path(&self) {
+        unimplemented!()
+    }
+}
