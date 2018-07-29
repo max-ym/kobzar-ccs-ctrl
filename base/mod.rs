@@ -4,6 +4,12 @@
 pub struct Object {
 }
 
+/// Transaction allows making multiple changes to object as a single
+/// operation. This allows to revert changes if one of the changes
+/// fails.
+pub struct ObjectTransaction {
+}
+
 /// Interface forms a set of services with defined functionality. When this
 /// functionality gets needed, master reads the interface information
 /// and finds appropriate object that implements this interface and thus can
@@ -19,12 +25,6 @@ pub struct Package {
 /// Service is called when some object needs to solve some problem which
 /// this service can carry out.
 pub struct Service {
-}
-
-/// Transaction allows making multiple changes to object as a single
-/// operation. This allows to revert changes if one of the changes
-/// fails.
-pub struct ObjectTransaction {
 }
 
 impl Object {
