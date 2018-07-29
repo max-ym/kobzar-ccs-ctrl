@@ -184,3 +184,11 @@ impl Package {
         unimplemented!()
     }
 }
+
+impl Service {
+
+    /// The name of this service.
+    pub fn name(&self) {
+        unimplemented!()
+    }
+}
