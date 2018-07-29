@@ -27,6 +27,10 @@ pub struct Package {
 pub struct Service {
 }
 
+/// Architecture-dependent implementation of service element functions.
+pub trait ServiceArch {
+}
+
 impl Object {
 
     /// All public services at current network level of the object.
@@ -189,6 +193,16 @@ impl Service {
 
     /// The name of this service.
     pub fn name(&self) {
+        unimplemented!()
+    }
+
+    /// Architecture-dependent part of Service element.
+    pub fn arch(&self) {
+        unimplemented!()
+    }
+
+    /// Architecture-dependent part of Service element.
+    pub fn arch_mut(&mut self) {
         unimplemented!()
     }
 }
