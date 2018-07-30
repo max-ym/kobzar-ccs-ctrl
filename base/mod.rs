@@ -1,4 +1,5 @@
 use std::rc::Rc;
+use std::cmp::Ordering;
 use std::collections::BTreeSet;
 
 /// Package path module.
@@ -53,6 +54,15 @@ pub struct Service {
 pub struct InterfaceDependency {
 
     tree    : BTreeSet<Rc<Interface>>,
+}
+
+/// Version of the interface. Contains major, minor and patch parts.
+#[derive(PartialEq, Eq)]
+pub struct InterfaceVersion {
+
+    major   : u32,
+    minor   : u32,
+    patch   : u32,
 }
 
 /// Architecture-dependent fields and functions of service.
@@ -253,5 +263,70 @@ impl InterfaceDependency {
     /// True if given interface is in this dependency.
     pub fn includes(&self, i: &Interface) -> bool {
         self.tree.contains(i)
+    }
+}
+
+impl Ord for InterfaceVersion {
+
+    fn cmp(&self, other: &InterfaceVersion) -> Ordering {
+        use self::Ordering::*;
+
+        if self.major > other.major {
+            Greater
+        } else if self.major < other.major {
+            Less
+        } else if self.minor > other.minor {
+            Greater
+        } else if self.minor < other.minor {
+            Less
+        } else if self.patch > other.patch {
+            Greater
+        } else if self.patch < other.patch {
+            Less
+        } else {
+            Equal
+        }
+    }
+}
+
+impl PartialOrd for InterfaceVersion {
+
+    fn partial_cmp(&self, other: &InterfaceVersion) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl InterfaceVersion {
+
+    /// Mix given version components into single InterfaceVersion struct.
+    pub fn new(major: u32, minor: u32, patch: u32) -> Self {
+        InterfaceVersion { major, minor, patch }
+    }
+
+    /// Major version of the interface.
+    pub fn major(&self) -> u32 {
+        self.major
+    }
+
+    /// Minor version of the interface.
+    pub fn minor(&self) -> u32 {
+        self.minor
+    }
+
+    /// Patch number of the interface version.
+    pub fn patch(&self) -> u32 {
+        self.patch
+    }
+
+    /// Check whether implementer of this interface version can be used
+    /// by object with given interface version.
+    pub fn is_compatible(&self, other: &InterfaceVersion) -> bool {
+        if self.major != other.major {
+            false
+        } else if self.minor < other.minor {
+            false
+        } else {
+            true
+        }
     }
 }
