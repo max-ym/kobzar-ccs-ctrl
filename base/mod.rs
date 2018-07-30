@@ -23,6 +23,8 @@ pub struct ObjectTransaction {
 /// and finds appropriate object that implements this interface and thus can
 /// solve some task with implemented interface functions.
 pub struct Interface {
+
+    name    : String,
 }
 
 /// Package contains set of interfaces that solve similar tasks or have
@@ -175,7 +177,7 @@ impl Interface {
 
     /// The name of the interface as it appear in the package.
     pub fn name(&self) -> &String {
-        unimplemented!()
+        &self.name
     }
 
     /// The version of this interface.
