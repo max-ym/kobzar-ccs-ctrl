@@ -29,6 +29,7 @@ pub struct ObjectTransaction {
 pub struct Interface {
 
     name    : String,
+    dep     : InterfaceDependency,
 }
 
 /// Package contains set of interfaces that solve similar tasks or have
@@ -48,6 +49,7 @@ pub struct Service {
 /// Dependency on iterface implementation. Shows what interfaces should
 /// be implemented in order to allow some other interface to be
 /// implemented by same object.
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct InterfaceDependency {
 
     tree    : BTreeSet<Rc<Interface>>,
@@ -205,8 +207,8 @@ impl Interface {
 
     /// List of dependent interfaces that must be implemented in order to
     /// allow implementing this interface.
-    pub fn dependency(&self) {
-        unimplemented!()
+    pub fn dependency(&self) -> &InterfaceDependency {
+        &self.dep
     }
 }
 
