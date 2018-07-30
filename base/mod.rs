@@ -32,10 +32,12 @@ pub struct Interface {
     name    : String,
     dep     : InterfaceDependency,
     ver     : InterfaceVersion,
+    pack    : Rc<Package>,
 }
 
 /// Package contains set of interfaces that solve similar tasks or have
 /// same vendor.
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct Package {
 
     path    : PackagePath,
@@ -196,8 +198,8 @@ impl ObjectTransaction {
 impl Interface {
 
     /// Package where this interface is located.
-    pub fn package(&self) {
-        unimplemented!()
+    pub fn package(&self) -> &Rc<Package> {
+        &self.pack
     }
 
     /// The name of the interface as it appear in the package.

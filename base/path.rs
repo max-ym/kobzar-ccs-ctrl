@@ -3,6 +3,7 @@ use std::iter::*;
 use std::collections::LinkedList;
 
 /// The node of the path.
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct PathNode {
 
     /// Package name at current hierarchy level.
@@ -10,6 +11,7 @@ pub struct PathNode {
 }
 
 /// The path (location) of the package.
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct Path {
 
     /// All nodes of the path in order from top level node first in array to
