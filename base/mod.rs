@@ -28,6 +28,8 @@ pub struct Interface {
 /// Package contains set of interfaces that solve similar tasks or have
 /// same vendor.
 pub struct Package {
+
+    path    : PackagePath,
 }
 
 /// Service is called when some object needs to solve some problem which
@@ -198,7 +200,7 @@ impl Package {
 
     /// The absolute path to this package.
     pub fn path(&self) -> &PackagePath {
-        unimplemented!()
+        &self.path
     }
 }
 
