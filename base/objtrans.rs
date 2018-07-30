@@ -226,4 +226,13 @@ impl ObjectTransaction {
     fn pushcmd(&mut self, cmd: Command) {
         self.cmds.push_front(cmd)
     }
+
+    /// Applies changes to given object.
+    pub fn apply_to_object(&self, obj: &mut Object) {
+        use self::Command::*;
+
+        for cmd in self.cmds.iter() {
+            unimplemented!()
+        }
+    }
 }
