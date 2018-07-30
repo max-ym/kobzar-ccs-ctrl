@@ -31,6 +31,7 @@ pub struct Interface {
 
     name    : String,
     dep     : InterfaceDependency,
+    ver     : InterfaceVersion,
 }
 
 /// Package contains set of interfaces that solve similar tasks or have
@@ -57,7 +58,7 @@ pub struct InterfaceDependency {
 }
 
 /// Version of the interface. Contains major, minor and patch parts.
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct InterfaceVersion {
 
     major   : u32,
@@ -205,8 +206,8 @@ impl Interface {
     }
 
     /// The version of this interface.
-    pub fn version(&self) {
-        unimplemented!()
+    pub fn version(&self) -> &InterfaceVersion {
+        &self.ver
     }
 
     /// List with all services that must be implemented by this interface
