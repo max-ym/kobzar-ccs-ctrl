@@ -33,6 +33,8 @@ pub struct Package {
 /// Service is called when some object needs to solve some problem which
 /// this service can carry out.
 pub struct Service {
+
+    name    : String,
 }
 
 /// Architecture-dependent fields and functions of service.
@@ -204,6 +206,6 @@ impl Service {
 
     /// The name of this service.
     pub fn name(&self) -> &String {
-        unimplemented!()
+        &self.name
     }
 }
