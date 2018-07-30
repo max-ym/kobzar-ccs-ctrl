@@ -26,7 +26,7 @@ pub struct ObjectTransaction {
 /// functionality gets needed, master reads the interface information
 /// and finds appropriate object that implements this interface and thus can
 /// solve some task with implemented interface functions.
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(PartialEq, Eq)]
 pub struct Interface {
 
     name    : String,
@@ -192,6 +192,48 @@ impl ObjectTransaction {
     /// Tell this object now doesn't implement given interface.
     pub fn unimplement_interface(&mut self) {
         unimplemented!()
+    }
+}
+
+impl Ord for Interface {
+
+    fn cmp(&self, other: &Interface) -> Ordering {
+        use self::Ordering::*;
+
+        let cmp_name = self.name.cmp(&other.name);
+        match cmp_name {
+            Greater => Greater,
+            Less    => Less,
+            Equal   => {
+                let cmp_version = self.ver.cmp(&other.ver);
+                match cmp_version {
+                    Greater => Greater,
+                    Less    => Less,
+                    Equal   => {
+                        let cmp_pack = self.pack.cmp(&other.pack);
+                        match cmp_pack {
+                            Greater => Greater,
+                            Less    => Less,
+                            Equal   => {
+                                let cmp_dep = self.dep.cmp(&other.dep);
+                                match cmp_dep {
+                                    Greater => Greater,
+                                    Less    => Less,
+                                    Equal   => Equal
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+impl PartialOrd for Interface {
+
+    fn partial_cmp(&self, other: &Interface) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
