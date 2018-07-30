@@ -71,7 +71,7 @@ impl Object {
 
 impl ObjectTransaction {
 
-    pub fn new() {
+    pub fn new() -> Self {
         unimplemented!()
     }
 
@@ -170,7 +170,7 @@ impl Interface {
     }
 
     /// The name of the interface as it appear in the package.
-    pub fn name(&self) {
+    pub fn name(&self) -> &String {
         unimplemented!()
     }
 
@@ -195,7 +195,7 @@ impl Interface {
 impl Package {
 
     /// The absolute path to this package.
-    pub fn path(&self) {
+    pub fn path(&self) -> &PackagePath {
         unimplemented!()
     }
 }
@@ -203,7 +203,7 @@ impl Package {
 impl Service {
 
     /// The name of this service.
-    pub fn name(&self) {
+    pub fn name(&self) -> &String {
         unimplemented!()
     }
 }
