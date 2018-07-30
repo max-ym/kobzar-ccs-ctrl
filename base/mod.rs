@@ -33,6 +33,7 @@ pub struct Interface {
     dep     : InterfaceDependency,
     ver     : InterfaceVersion,
     pack    : Rc<Package>,
+    serv    : BTreeSet<Service>,
 }
 
 /// Package contains set of interfaces that solve similar tasks or have
@@ -45,6 +46,7 @@ pub struct Package {
 
 /// Service is called when some object needs to solve some problem which
 /// this service can carry out.
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct Service {
 
     name    : String,
@@ -215,11 +217,18 @@ impl Ord for Interface {
                             Greater => Greater,
                             Less    => Less,
                             Equal   => {
-                                let cmp_dep = self.dep.cmp(&other.dep);
-                                match cmp_dep {
+                                let cmp_serv = self.serv.cmp(&other.serv);
+                                match cmp_serv {
                                     Greater => Greater,
                                     Less    => Less,
-                                    Equal   => Equal
+                                    Equal   => {
+                                        let cmp_dep = self.dep.cmp(&other.dep);
+                                        match cmp_dep {
+                                            Greater => Greater,
+                                            Less    => Less,
+                                            Equal   => Equal
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -256,8 +265,8 @@ impl Interface {
 
     /// List with all services that must be implemented by this interface
     /// implementer. This exludes the services of dependent interfaces.
-    pub fn services(&self) {
-        unimplemented!()
+    pub fn services(&self) -> &BTreeSet<Service> {
+        &self.serv
     }
 
     /// List of dependent interfaces that must be implemented in order to
