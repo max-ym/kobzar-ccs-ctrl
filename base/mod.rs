@@ -1,6 +1,11 @@
 /// Package path module.
 mod path;
 
+pub use self::path::Path            as PackagePath;
+pub use self::path::PathConstructor as PackagePathConstructor;
+pub use self::path::PathIter        as PackagePathIter;
+pub use self::path::PathNode        as PackagePathNode;
+
 /// The object of the network. Object contains services and subobjects.
 /// It can also implement some interfaces. It has some internal memory
 /// shared among internal objects and services.
