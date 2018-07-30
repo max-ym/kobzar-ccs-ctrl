@@ -1,3 +1,6 @@
+use std::rc::Rc;
+use std::collections::BTreeSet;
+
 /// Package path module.
 mod path;
 
@@ -22,6 +25,7 @@ pub struct ObjectTransaction {
 /// functionality gets needed, master reads the interface information
 /// and finds appropriate object that implements this interface and thus can
 /// solve some task with implemented interface functions.
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct Interface {
 
     name    : String,
@@ -39,6 +43,14 @@ pub struct Package {
 pub struct Service {
 
     name    : String,
+}
+
+/// Dependency on iterface implementation. Shows what interfaces should
+/// be implemented in order to allow some other interface to be
+/// implemented by same object.
+pub struct InterfaceDependency {
+
+    tree    : BTreeSet<Rc<Interface>>,
 }
 
 /// Architecture-dependent fields and functions of service.
@@ -211,5 +223,33 @@ impl Service {
     /// The name of this service.
     pub fn name(&self) -> &String {
         &self.name
+    }
+}
+
+impl InterfaceDependency {
+
+    /// Create new InterfaceDependency with empty dependency list.
+    pub fn new() -> Self {
+        InterfaceDependency { tree: BTreeSet::new() }
+    }
+
+    /// Tree of interfaces that are in this dependency.
+    pub fn tree(&self) -> &BTreeSet<Rc<Interface>> {
+        &self.tree
+    }
+
+    /// Tree of interfaces that are in this dependency.
+    pub fn tree_mut(&mut self) -> &mut BTreeSet<Rc<Interface>> {
+        &mut self.tree
+    }
+
+    /// Add new interface to the dependency.
+    pub fn add(&mut self, interface_rc: &Rc<Interface>) {
+        self.tree.insert(interface_rc.clone());
+    }
+
+    /// True if given interface is in this dependency.
+    pub fn includes(&self, i: &Interface) -> bool {
+        self.tree.contains(i)
     }
 }
