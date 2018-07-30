@@ -1,3 +1,6 @@
+/// Package path module.
+mod path;
+
 /// The object of the network. Object contains services and subobjects.
 /// It can also implement some interfaces. It has some internal memory
 /// shared among internal objects and services.
