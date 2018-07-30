@@ -157,7 +157,7 @@ impl ObjectTransaction {
     }
 
     /// Tell this object now doesn't implement given interface.
-    pub fn unimplemente_interface(&mut self) {
+    pub fn unimplement_interface(&mut self) {
         unimplemented!()
     }
 }
