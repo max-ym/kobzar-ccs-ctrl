@@ -114,6 +114,28 @@ impl Object {
             -> Result<(), ObjectTransactionError> {
         transaction.apply_to_object(self)
     }
+
+    /// Whether this object has service with this name.
+    pub fn has_service_with_name(&self, name: &String) -> bool {
+        let check = |list: &BTreeSet<Box<ServiceArch>>| -> bool {
+            for s in list.iter() {
+                if s.service().name() == name {
+                    return true;
+                }
+            }
+            false
+        };
+
+        if check(&self.pubsrv) {
+            true
+        } else if check(&self.intsrv) {
+            true
+        } else if check(&self.privsrv) {
+            true
+        } else {
+            false
+        }
+    }
 }
 
 impl Ord for Interface {
