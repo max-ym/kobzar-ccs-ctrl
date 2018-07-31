@@ -28,70 +28,70 @@ pub enum Visibility {
 enum Command {
 
     /// Add public service.
-    AddPubSrv(Service),
+    AddPubSrv(Box<Service>),
 
     /// Add internal service.
-    AddIntSrv(Service),
+    AddIntSrv(Box<Service>),
 
     /// Add private service.
-    AddPrivSrv(Service),
+    AddPrivSrv(Box<Service>),
 
     /// Remove public service.
-    RemPubSrv(Service),
+    RemPubSrv(Box<Service>),
 
     /// Remove internal service.
-    RemIntSrv(Service),
+    RemIntSrv(Box<Service>),
 
     /// Remove private service.
-    RemPrivSrv(Service),
+    RemPrivSrv(Box<Service>),
 
     /// Change public service visibility.
-    ChgPubSrvVis(Service, Visibility),
+    ChgPubSrvVis(Box<Service>, Visibility),
 
     /// Change internal service visibility.
-    ChgIntSrvVis(Service, Visibility),
+    ChgIntSrvVis(Box<Service>, Visibility),
 
     /// Change private service visibility.
-    ChgPrivSrvVis(Service, Visibility),
+    ChgPrivSrvVis(Box<Service>, Visibility),
 
     /// Change service visibility.
-    ChgSrvVis(Service, Visibility),
+    ChgSrvVis(Box<Service>, Visibility),
 
     /// New public sub-object.
-    NewPubSubObj(Object),
+    NewPubSubObj(Box<Object>),
 
     /// New internal sub-object.
-    NewIntSubObj(Object),
+    NewIntSubObj(Box<Object>),
 
     /// New private sub-object.
-    NewPrivSubObj(Object),
+    NewPrivSubObj(Box<Object>),
 
     /// Remove public sub-object.
-    RemPubSubObj(Object),
+    RemPubSubObj(Box<Object>),
 
     /// Remove internal sub-object.
-    RemIntSubObj(Object),
+    RemIntSubObj(Box<Object>),
 
     /// Remove private sub-object.
-    RemPrivSubObj(Object),
+    RemPrivSubObj(Box<Object>),
 
     /// Change sub-object visibility.
-    ChgSubObjVis(Object, Visibility),
+    ChgSubObjVis(Box<Object>, Visibility),
 
     /// Change public sub-object visibility.
-    ChgPubSubObjVis(Object, Visibility),
+    ChgPubSubObjVis(Box<Object>, Visibility),
 
     /// Change internal sub-object visibility.
-    ChgIntSubObjVis(Object, Visibility),
+    ChgIntSubObjVis(Box<Object>, Visibility),
 
     /// Change private sub-object visibility.
-    ChgPrivSubObjVis(Object, Visibility),
+    ChgPrivSubObjVis(Box<Object>, Visibility),
 
     /// Implement interface.
-    ImplInt(Interface),
+    ImplInt(Box<Interface>),
 
     /// Unimplement interface.
-    UnimplInt(Interface),
+    UnimplInt(Box<Interface>),
 }
 
 impl ObjectTransaction {
@@ -103,22 +103,22 @@ impl ObjectTransaction {
     }
 
     /// Add new public service.
-    pub fn add_public_service(&mut self, srv: Service) {
+    pub fn add_public_service(&mut self, srv: Box<Service>) {
         self.pushcmd(Command::AddPubSrv(srv));
     }
 
     /// Add new internal service.
-    pub fn add_internal_service(&mut self, srv: Service) {
+    pub fn add_internal_service(&mut self, srv: Box<Service>) {
         self.pushcmd(Command::AddIntSrv(srv));
     }
 
     /// Add new private service.
-    pub fn add_private_service(&mut self, srv: Service) {
+    pub fn add_private_service(&mut self, srv: Box<Service>) {
         self.pushcmd(Command::AddPrivSrv(srv));
     }
 
     /// Add service and set it's visibility to given value.
-    pub fn add_service(&mut self, srv: Service, vis: Visibility) {
+    pub fn add_service(&mut self, srv: Box<Service>, vis: Visibility) {
         use self::Visibility::*;
 
         match vis {
@@ -128,23 +128,23 @@ impl ObjectTransaction {
         }
     }
 
-    pub fn remove_public_service(&mut self, srv: Service) {
+    pub fn remove_public_service(&mut self, srv: Box<Service>) {
         self.pushcmd(Command::RemPubSrv(srv));
     }
 
-    pub fn remove_internal_service(&mut self, srv: Service) {
+    pub fn remove_internal_service(&mut self, srv: Box<Service>) {
         self.pushcmd(Command::RemIntSrv(srv));
     }
 
-    pub fn remove_private_service(&mut self, srv: Service) {
+    pub fn remove_private_service(&mut self, srv: Box<Service>) {
         self.pushcmd(Command::RemPrivSrv(srv));
     }
 
     /// Change visibility of given service. If service initial visibility
     /// isn't passed then all lists will be checked to find requested service
     /// and then the visibility will be changed.
-    pub fn change_service_access(&mut self, srv: Service, newvis: Visibility,
-            oldvis: Option<Visibility>) {
+    pub fn change_service_access(&mut self, srv: Box<Service>,
+            newvis: Visibility, oldvis: Option<Visibility>) {
         use self::Visibility::*;
 
         if oldvis.is_none() {
@@ -157,40 +157,40 @@ impl ObjectTransaction {
     }
 
     /// Create new public sub-object.
-    pub fn new_public_sub_object(&mut self, obj: Object) {
+    pub fn new_public_sub_object(&mut self, obj: Box<Object>) {
         self.pushcmd(Command::NewPubSubObj(obj));
     }
 
     /// Create new internal sub-object.
-    pub fn new_internal_sub_object(&mut self, obj: Object) {
+    pub fn new_internal_sub_object(&mut self, obj: Box<Object>) {
         self.pushcmd(Command::NewIntSubObj(obj));
     }
 
     /// Create new private sub-object.
-    pub fn new_private_sub_object(&mut self, obj: Object) {
+    pub fn new_private_sub_object(&mut self, obj: Box<Object>) {
         self.pushcmd(Command::NewPrivSubObj(obj));
     }
 
     /// Delete private sub-object.
-    pub fn remove_private_sub_object(&mut self, obj: Object) {
+    pub fn remove_private_sub_object(&mut self, obj: Box<Object>) {
         self.pushcmd(Command::RemPrivSubObj(obj));
     }
 
     /// Delete internal sub-object.
-    pub fn remove_internal_sub_object(&mut self, obj: Object) {
+    pub fn remove_internal_sub_object(&mut self, obj: Box<Object>) {
         self.pushcmd(Command::RemIntSubObj(obj));
     }
 
     /// Delete public sub-object.
-    pub fn remove_public_sub_object(&mut self, obj: Object) {
+    pub fn remove_public_sub_object(&mut self, obj: Box<Object>) {
         self.pushcmd(Command::RemPubSubObj(obj));
     }
 
     /// Change the visibility of sub-object from given value to new value.
     /// If initial value is not passed then every list of objects will be
     /// checked to find it and change the visibility to appropriate.
-    pub fn change_sub_object_access(&mut self, obj: Object, newvis: Visibility,
-            oldvis: Option<Visibility>) {
+    pub fn change_sub_object_access(&mut self, obj: Box<Object>,
+            newvis: Visibility, oldvis: Option<Visibility>) {
          use self::Command::{
             ChgSubObjVis,
             ChgPrivSubObjVis,
@@ -214,12 +214,12 @@ impl ObjectTransaction {
     }
 
     /// Mark this object as interface implementer.
-    pub fn implement_interface(&mut self, i: Interface) {
+    pub fn implement_interface(&mut self, i: Box<Interface>) {
         self.pushcmd(Command::ImplInt(i));
     }
 
     /// Tell this object now doesn't implement given interface.
-    pub fn unimplement_interface(&mut self, i: Interface) {
+    pub fn unimplement_interface(&mut self, i: Box<Interface>) {
         self.pushcmd(Command::UnimplInt(i));
     }
 
