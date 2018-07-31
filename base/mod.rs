@@ -15,12 +15,6 @@ pub use self::path::PathNode        as PackagePathNode;
 
 pub use self::objtrans::*;
 
-/// The object of the network. Object contains services and subobjects.
-/// It can also implement some interfaces. It has some internal memory
-/// shared among internal objects and services.
-pub struct Object {
-}
-
 /// Interface forms a set of services with defined functionality. When this
 /// functionality gets needed, master reads the interface information
 /// and finds appropriate object that implements this interface and thus can
@@ -69,38 +63,31 @@ pub struct InterfaceVersion {
     patch   : u32,
 }
 
+/// The object of the network. Object contains services and subobjects.
+/// It can also implement some interfaces. It has some internal memory
+/// shared among internal objects and services.
+pub trait Object {
+
+    /// All public services at current network level of the object.
+    fn public_services(&self);
+
+    /// All internal services at current network level of the object.
+    fn internal_services(&self);
+
+    /// All private services at current network level of the object.
+    fn private_services(&self);
+
+    /// All interfaces implemented by this object.
+    fn interfaces(&self);
+
+    fn apply_transaction(&mut self);
+}
+
 /// Architecture-dependent fields and functions of service.
 pub trait ServiceArch {
 
     /// Service component of ServiceArch trait.
     fn service(&self) -> &Service;
-}
-
-impl Object {
-
-    /// All public services at current network level of the object.
-    pub fn public_services(&self) {
-        unimplemented!()
-    }
-
-    /// All internal services at current network level of the object.
-    pub fn internal_services(&self) {
-        unimplemented!()
-    }
-
-    /// All private services at current network level of the object.
-    pub fn private_services(&self) {
-        unimplemented!()
-    }
-
-    /// All interfaces implemented by this object.
-    pub fn interfaces(&self) {
-        unimplemented!()
-    }
-
-    pub fn apply_transaction(&mut self) {
-        unimplemented!()
-    }
 }
 
 impl Ord for Interface {
