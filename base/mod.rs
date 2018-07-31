@@ -15,6 +15,24 @@ pub use self::path::PathNode        as PackagePathNode;
 
 pub use self::objtrans::*;
 
+/// The object of the network. Object contains services and subobjects.
+/// It can also implement some interfaces. It has some internal memory
+/// shared among internal objects and services.
+pub struct Object {
+
+    /// Public service set.
+    pubsrv      : BTreeSet<Box<ServiceArch>>,
+
+    /// Internal service set.
+    intsrv      : BTreeSet<Box<ServiceArch>>,
+
+    /// Private service set.
+    privsrv     : BTreeSet<Box<ServiceArch>>,
+
+    /// Interfaces implemented.
+    ints        : BTreeSet<Interface>,
+}
+
 /// Interface forms a set of services with defined functionality. When this
 /// functionality gets needed, master reads the interface information
 /// and finds appropriate object that implements this interface and thus can
@@ -63,31 +81,39 @@ pub struct InterfaceVersion {
     patch   : u32,
 }
 
-/// The object of the network. Object contains services and subobjects.
-/// It can also implement some interfaces. It has some internal memory
-/// shared among internal objects and services.
-pub trait Object {
-
-    /// All public services at current network level of the object.
-    fn public_services(&self);
-
-    /// All internal services at current network level of the object.
-    fn internal_services(&self);
-
-    /// All private services at current network level of the object.
-    fn private_services(&self);
-
-    /// All interfaces implemented by this object.
-    fn interfaces(&self);
-
-    fn apply_transaction(&mut self);
-}
-
 /// Architecture-dependent fields and functions of service.
 pub trait ServiceArch {
 
     /// Service component of ServiceArch trait.
     fn service(&self) -> &Service;
+}
+
+impl Object {
+
+    /// All public services at current network level of the object.
+    pub fn public_services(&self) -> &BTreeSet<Box<ServiceArch>> {
+        &self.pubsrv
+    }
+
+    /// All internal services at current network level of the object.
+    pub fn internal_services(&self) -> &BTreeSet<Box<ServiceArch>> {
+        &self.intsrv
+    }
+
+    /// All private services at current network level of the object.
+    pub fn private_services(&self) -> &BTreeSet<Box<ServiceArch>> {
+        &self.privsrv
+    }
+
+    /// All interfaces implemented by this object.
+    pub fn interfaces(&self) -> &BTreeSet<Interface> {
+        &self.ints
+    }
+
+    pub fn apply_transaction(&mut self, transaction: &ObjectTransaction)
+            -> Result<(), ObjectTransactionError> {
+        transaction.apply_to_object(self)
+    }
 }
 
 impl Ord for Interface {
