@@ -1,6 +1,7 @@
 use std::rc::Rc;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
+use std::collections::btree_map::Entry as BTreeMapEntry;
 
 /// Package path module.
 mod path;
@@ -14,12 +15,6 @@ pub use self::path::PathIter        as PackagePathIter;
 pub use self::path::PathNode        as PackagePathNode;
 
 pub use self::objtrans::*;
-
-/// Structure that holds a pointer to a String value. It has specific
-/// implementation of traits PartialEq, Eq, PartialOrd, Ord. Thus
-/// when it gets compared, the comparison is performed on string values
-/// and not on pointer addresses.
-struct StringOrd(*const String);
 
 /// The object of the network. Object contains services and subobjects.
 /// It can also implement some interfaces. It has some internal memory
@@ -40,7 +35,7 @@ pub struct Object {
 
     /// Service names tree. Allows to quickly find whether the service
     /// with given name already exist and access it.
-    srvnames    : BTreeMap<StringOrd, *const Box<ServiceArch>>,
+    srvnames    : BTreeMap<&'static String, &'static Box<ServiceArch>>,
 }
 
 /// Interface forms a set of services with defined functionality. When this
@@ -98,36 +93,6 @@ pub trait ServiceArch {
     fn service(&self) -> &Service;
 }
 
-impl PartialEq for StringOrd {
-
-    fn eq(&self, other: &StringOrd) -> bool {
-        self.r() == other.r()
-    }
-}
-
-impl Eq for StringOrd {}
-
-impl Ord for StringOrd {
-
-    fn cmp(&self, other: &StringOrd) -> ::std::cmp::Ordering {
-        self.r().cmp(other.r())
-    }
-}
-
-impl PartialOrd for StringOrd {
-
-    fn partial_cmp(&self, other: &StringOrd) -> Option<::std::cmp::Ordering> {
-        self.r().partial_cmp(other.r())
-    }
-}
-
-impl StringOrd {
-
-    pub fn r(&self) -> &String {
-        unsafe { &*self.0 }
-    }
-}
-
 impl Object {
 
     /// All public services at current network level of the object.
@@ -157,7 +122,7 @@ impl Object {
 
     /// Whether this object has service with this name.
     pub fn has_service_with_name(&self, name: &String) -> bool {
-        let val = self.srvnames.get(&StringOrd(name as *const _));
+        let val = self.srvnames.get(name);
         val.is_some()
     }
 }
