@@ -94,6 +94,11 @@ enum Command {
     UnimplInt(Box<Interface>),
 }
 
+/// Object transaction error which occurs when transaction failed to be
+/// applied.
+pub enum ObjectTransactionError {
+}
+
 impl ObjectTransaction {
 
     pub fn new() -> Self {
@@ -228,11 +233,17 @@ impl ObjectTransaction {
     }
 
     /// Applies changes to given object.
-    pub fn apply_to_object(&self, obj: &mut Object) {
+    pub fn apply_to_object(&self, obj: &mut Object)
+            -> Result<(), ObjectTransactionError> {
         use self::Command::*;
 
-        for cmd in self.cmds.iter() {
-            unimplemented!()
-        }
+        unimplemented!()
+//         for cmd in self.cmds.iter() {
+//             match cmd {
+//                 AddPubSrv(srv) => {
+//
+//                 },
+//             }
+//         }
     }
 }
