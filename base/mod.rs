@@ -16,6 +16,8 @@ pub use self::path::PathNode        as PackagePathNode;
 
 pub use self::objtrans::*;
 
+pub type ServiceMapEntry<'a> = BTreeMapEntry<'a, &'a String, Box<ServiceArch>>;
+
 /// The object of the network. Object contains services and subobjects.
 /// It can also implement some interfaces. It has some internal memory
 /// shared among internal objects and services.
@@ -35,7 +37,7 @@ pub struct Object {
 
     /// Service names tree. Allows to quickly find whether the service
     /// with given name already exist and access it.
-    srvnames    : BTreeMap<&'static String, &'static Box<ServiceArch>>,
+    srvnames    : BTreeMap<&'static String, ServiceMapEntry<'static>>,
 }
 
 /// Interface forms a set of services with defined functionality. When this
@@ -124,6 +126,18 @@ impl Object {
     pub fn has_service_with_name(&self, name: &String) -> bool {
         let val = self.srvnames.get(name);
         val.is_some()
+    }
+
+    /// Service with given name if it is implemented in this object.
+    pub fn service_by_name<'a>(&'a mut self, name: &'static String)
+            -> Option<&'a ServiceMapEntry<'static>> {
+        use self::BTreeMapEntry::*;
+        match self.srvnames.entry(name) {
+            Occupied(i)=> {
+                Some(i.into_mut())
+            },
+            Vacant(i) => None
+        }
     }
 }
 
