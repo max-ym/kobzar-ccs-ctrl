@@ -136,7 +136,7 @@ impl Object {
 
     /// Service entry in BTree by given service name if it is implemented
     /// in this object.
-    pub fn service_by_name(&mut self, name: &String)
+    pub fn service_by_name(&self, name: &String)
             -> Option<&ServiceMapEntry> {
         let val = self.srvnames.get(name);
 
@@ -146,6 +146,17 @@ impl Object {
         let val = val.unwrap();
 
         Some(val)
+    }
+
+    /// Service entry in BTree by given service name if it is implemented
+    /// in this object.
+    pub fn service_by_name_mut(&mut self, name: &String) ->
+            Option<&mut ServiceMapEntry> {
+        // Convert const reference to mut from related fn.
+        match self.service_by_name(name) {
+            Some(v) => Some(unsafe { &mut *(v as *const _ as *mut _) }),
+            None    => None
+        }
     }
 }
 
