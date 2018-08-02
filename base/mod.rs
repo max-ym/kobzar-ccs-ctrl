@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::rc::{Rc, Weak};
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 use std::collections::btree_map::Entry as BTreeMapEntry;
@@ -16,7 +16,13 @@ pub use self::path::PathNode        as PackagePathNode;
 
 pub use self::objtrans::*;
 
-pub type ServiceMapEntry<'a> = BTreeMapEntry<'a, &'a String, Box<ServiceArch>>;
+pub type ServiceMapEntry<'a> = BTreeMapEntry<
+        'a, ServiceNameWrap, Box<ServiceArch>>;
+
+/// Wrap to allow creating pointer to name string of Service and use it as
+/// readable reference. Used to avoid cloning strings in BTrees used to
+/// search services.
+struct ServiceNameWrap(*const String);
 
 /// The object of the network. Object contains services and subobjects.
 /// It can also implement some interfaces. It has some internal memory
@@ -37,7 +43,7 @@ pub struct Object {
 
     /// Service names tree. Allows to quickly find whether the service
     /// with given name already exist and access it.
-    srvnames    : BTreeMap<&'static String, ServiceMapEntry<'static>>,
+    srvnames    : BTreeMap<ServiceNameWrap, ServiceMapEntry<'static>>,
 }
 
 /// Interface forms a set of services with defined functionality. When this
@@ -128,16 +134,18 @@ impl Object {
         val.is_some()
     }
 
-    /// Service with given name if it is implemented in this object.
-    pub fn service_by_name<'a>(&'a mut self, name: &'static String)
-            -> Option<&'a ServiceMapEntry<'static>> {
-        use self::BTreeMapEntry::*;
-        match self.srvnames.entry(name) {
-            Occupied(i)=> {
-                Some(i.into_mut())
-            },
-            Vacant(i) => None
+    /// Service entry in BTree by given service name if it is implemented
+    /// in this object.
+    pub fn service_by_name(&mut self, name: &String)
+            -> Option<&ServiceMapEntry> {
+        let val = self.srvnames.get(name);
+
+        if val.is_none() {
+            return None;
         }
+        let val = val.unwrap();
+
+        Some(val)
     }
 }
 
@@ -326,5 +334,38 @@ impl InterfaceVersion {
         } else {
             true
         }
+    }
+}
+
+impl PartialEq for ServiceNameWrap {
+
+    fn eq(&self, other: &ServiceNameWrap) -> bool {
+        unsafe { *self.0 == *other.0 }
+    }
+}
+
+impl Eq for ServiceNameWrap {}
+
+impl Ord for ServiceNameWrap {
+
+    fn cmp(&self, other: &ServiceNameWrap) -> Ordering {
+        let reference = unsafe { &*self.0 };
+        let otherref  = unsafe { &*other.0 };
+
+        reference.cmp(otherref)
+    }
+}
+
+impl PartialOrd for ServiceNameWrap {
+
+    fn partial_cmp(&self, other: &ServiceNameWrap) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl ::std::borrow::Borrow<String> for ServiceNameWrap {
+
+    fn borrow(&self) -> &String {
+        unsafe { &*self.0 }
     }
 }
