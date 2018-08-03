@@ -1,7 +1,6 @@
-use super::{Service, Interface, Object};
+use base::{Service, Interface, Object};
 use std::collections::LinkedList;
-use super::ServiceMapEntry;
-use super::super::Master;
+use super::Master;
 
 /// Transaction allows making multiple changes to object as a single
 /// operation. This allows to revert changes if one of the changes
@@ -106,7 +105,7 @@ pub enum TransactionError {
 impl<'a> Transaction<'a> {
 
     pub fn new(master: &'a Master) -> Self {
-        ObjectTransaction {
+        Transaction {
             master: master,
             cmds : Default::default(),
         }
@@ -239,7 +238,7 @@ impl<'a> Transaction<'a> {
 
     /// Applies changes to given object.
     pub fn apply_to_object(&self, obj: &mut Object)
-            -> Result<(), ObjectTransactionError> {
+            -> Result<(), TransactionError> {
         use self::Command::*;
 
         for cmd in self.cmds.iter() {

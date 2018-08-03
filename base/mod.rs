@@ -6,15 +6,10 @@ use std::collections::btree_map::Entry as BTreeMapEntry;
 /// Package path module.
 mod path;
 
-/// Package implementing ObjectTransation-s.
-mod objtrans;
-
 pub use self::path::Path;
 pub use self::path::PathConstructor;
 pub use self::path::PathIter;
 pub use self::path::PathNode;
-
-pub use self::objtrans::*;
 
 pub type ServiceMapEntry<'a> = BTreeMapEntry<
         'a, NameWrap, Box<ServiceArch>>;
@@ -136,11 +131,6 @@ impl Object {
     /// All interfaces implemented by this object.
     pub fn interfaces(&self) -> &BTreeSet<Interface> {
         &self.ints
-    }
-
-    pub fn apply_transaction(&mut self, transaction: &ObjectTransaction)
-            -> Result<(), ObjectTransactionError> {
-        transaction.apply_to_object(self)
     }
 
     /// Whether this object has service with this name.

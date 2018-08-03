@@ -3,6 +3,11 @@
 /// Basic elements to make up the network operation environment.
 pub mod base;
 
+/// Module implementing transactions.
+mod trans;
+
+pub use trans::*;
+
 /// Master controller of CCS network.
 pub struct Master {
 }
