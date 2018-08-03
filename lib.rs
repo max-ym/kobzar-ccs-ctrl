@@ -1,4 +1,6 @@
 #![feature(fused)]
+use std::collections::BTreeMap;
+use std::rc::Rc;
 
 /// Basic elements to make up the network operation environment.
 pub mod base;
@@ -6,6 +8,7 @@ pub mod base;
 /// Module implementing transactions.
 mod trans;
 
+pub use base::*;
 pub use trans::*;
 
 /// Master controller of CCS network.
@@ -18,7 +21,17 @@ pub struct ObjectHierarchy {
 
 /// Interface hierarchy of the network.
 pub struct InterfaceHierarchy {
+
+    /// Name of the hierarchy node.
+    name    : Rc<String>,
+
+    /// Interfaces at current hierarchy level.
+    ints    : Rc<Interface>,
+
+    /// Tree of subpackages.
+    subs    : BTreeMap<Rc<String>, InterfaceHierarchy>,
 }
+
 
 /// Source of interfaces. When some yet unknown interface is requested,
 /// Master controller
