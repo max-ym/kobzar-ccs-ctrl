@@ -237,13 +237,14 @@ impl ObjectTransaction {
             -> Result<(), ObjectTransactionError> {
         use self::Command::*;
 
-        unimplemented!()
-//         for cmd in self.cmds.iter() {
-//             match cmd {
-//                 AddPubSrv(srv) => {
-//
-//                 },
-//             }
-//         }
+        for cmd in self.cmds.iter() {
+            match *cmd {
+                AddPubSrv(ref srv) => {
+
+                },
+                _ => unimplemented!()
+            }
+        }
+        unimplemented!();
     }
 }
