@@ -1,13 +1,17 @@
 use super::{Service, Interface, Object};
 use std::collections::LinkedList;
+use super::ServiceMapEntry;
+use super::super::Master;
 
 /// Transaction allows making multiple changes to object as a single
 /// operation. This allows to revert changes if one of the changes
 /// fails.
-#[derive(Default)]
-pub struct ObjectTransaction {
+pub struct Transaction<'a> {
 
-    /// Commands
+    /// Master where object is located.
+    master  : &'a Master,
+
+    /// Commands to change the choosen object.
     cmds    : LinkedList<Command>,
 }
 
@@ -94,15 +98,16 @@ enum Command {
     UnimplInt(Box<Interface>),
 }
 
-/// Object transaction error which occurs when transaction failed to be
+/// Transaction error which occurs when transaction failed to be
 /// applied.
-pub enum ObjectTransactionError {
+pub enum TransactionError {
 }
 
-impl ObjectTransaction {
+impl<'a> Transaction<'a> {
 
-    pub fn new() -> Self {
+    pub fn new(master: &'a Master) -> Self {
         ObjectTransaction {
+            master: master,
             cmds : Default::default(),
         }
     }
