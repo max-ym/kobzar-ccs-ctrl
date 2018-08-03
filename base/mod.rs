@@ -9,10 +9,10 @@ mod path;
 /// Package implementing ObjectTransation-s.
 mod objtrans;
 
-pub use self::path::Path            as PackagePath;
-pub use self::path::PathConstructor as PackagePathConstructor;
-pub use self::path::PathIter        as PackagePathIter;
-pub use self::path::PathNode        as PackagePathNode;
+pub use self::path::Path;
+pub use self::path::PathConstructor;
+pub use self::path::PathIter;
+pub use self::path::PathNode;
 
 pub use self::objtrans::*;
 
@@ -76,7 +76,7 @@ pub struct Interface {
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub struct Package {
 
-    path    : PackagePath,
+    path    : Path,
 }
 
 /// Service is called when some object needs to solve some problem which
@@ -309,7 +309,7 @@ impl Interface {
 impl Package {
 
     /// The absolute path to this package.
-    pub fn path(&self) -> &PackagePath {
+    pub fn path(&self) -> &Path {
         &self.path
     }
 }
