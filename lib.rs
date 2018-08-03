@@ -7,11 +7,6 @@ pub mod base;
 pub struct Master {
 }
 
-/// Transaction to make multiple changes to CCS network as a single operation
-/// and revert all changes if any step has failed.
-pub struct Transaction {
-}
-
 /// Object hierarchy of the network.
 pub struct ObjectHierarchy {
 }
@@ -90,44 +85,6 @@ impl Master {
 
     /// Add new implementer loader.
     pub fn add_implementer_loader<L: ImplementerLoader>(&mut self, loader: L) {
-        unimplemented!()
-    }
-}
-
-impl Transaction {
-
-    /// Start new transaction.
-    pub fn new() {
-        unimplemented!()
-    }
-
-    /// Register new object in the network.
-    pub fn new_object(&mut self) {
-        unimplemented!()
-    }
-
-    /// Register new interface in the network.
-    pub fn new_interface(&mut self) {
-        unimplemented!()
-    }
-
-    /// Register new service for some object in the network.
-    pub fn new_service(&mut self) {
-        unimplemented!()
-    }
-
-    /// Remove given object.
-    pub fn remove_object(&mut self) {
-        unimplemented!()
-    }
-
-    /// Remove given interface.
-    pub fn remove_interface(&mut self) {
-        unimplemented!()
-    }
-
-    /// Remove given service.
-    pub fn remove_service(&mut self) {
         unimplemented!()
     }
 }
