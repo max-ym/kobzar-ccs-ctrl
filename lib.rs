@@ -19,17 +19,23 @@ pub struct Master {
 pub struct ObjectHierarchy {
 }
 
+/// BTreeMap of interfaces.
+pub type InterfaceMap = BTreeMap<NameWrap, Rc<Interface>>;
+
+/// BTreeMap of sub-package interface hierarchy.
+pub type PackageMap = BTreeMap<NameWrap, InterfaceHierarchy>;
+
 /// Interface hierarchy of the network.
 pub struct InterfaceHierarchy {
 
-    /// Name of the hierarchy node.
-    name    : Rc<String>,
+    /// Package of this hierarchy node.
+    pack    : Package,
 
     /// Interfaces at current hierarchy level.
-    ints    : Rc<Interface>,
+    ints    : InterfaceMap,
 
     /// Tree of subpackages.
-    subs    : BTreeMap<Rc<String>, InterfaceHierarchy>,
+    subs    : PackageMap,
 }
 
 
@@ -148,17 +154,17 @@ impl ObjectHierarchy {
 impl InterfaceHierarchy {
 
     /// Current package.
-    pub fn current_package(&self) {
-        unimplemented!()
+    pub fn current_package(&self) -> &Package {
+        &self.pack
     }
 
     /// All interfaces located at current level of the package.
-    pub fn interfaces(&self) {
-        unimplemented!()
+    pub fn interfaces(&self) -> &InterfaceMap {
+        &self.ints
     }
 
     /// All packages at one step lower level of hierarchy.
-    pub fn sub_packages(&self) {
-        unimplemented!()
+    pub fn sub_packages(&self) -> &PackageMap {
+        &self.subs
     }
 }
