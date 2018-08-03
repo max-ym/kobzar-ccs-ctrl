@@ -17,17 +17,21 @@ pub use self::path::PathNode        as PackagePathNode;
 pub use self::objtrans::*;
 
 pub type ServiceMapEntry<'a> = BTreeMapEntry<
-        'a, ServiceNameWrap, Box<ServiceArch>>;
+        'a, NameWrap, Box<ServiceArch>>;
 
-/// Wrap to allow creating pointer to name string of Service and use it as
+/// Wrap to allow creating pointer to name string of Service or Object
+/// and use it as
 /// readable reference. Used to avoid cloning strings in BTrees used to
 /// search services.
-struct ServiceNameWrap(*const String);
+struct NameWrap(*const String);
 
 /// The object of the network. Object contains services and subobjects.
 /// It can also implement some interfaces. It has some internal memory
 /// shared among internal objects and services.
 pub struct Object {
+
+    /// Name of this object.
+    name        : String,
 
     /// Public service set.
     pubsrv      : BTreeSet<Box<ServiceArch>>,
@@ -43,7 +47,14 @@ pub struct Object {
 
     /// Service names tree. Allows to quickly find whether the service
     /// with given name already exist and access it.
-    srvnames    : BTreeMap<ServiceNameWrap, ServiceMapEntry<'static>>,
+    srvnames    : BTreeMap<NameWrap, ServiceMapEntry<'static>>,
+}
+
+/// Object and it's ID in the network. Allows to distinguish objects with
+/// same names on same hierarchy level.
+pub struct ObjectVector {
+    obj : Object,
+    id  : u32,
 }
 
 /// Interface forms a set of services with defined functionality. When this
@@ -103,6 +114,10 @@ pub trait ServiceArch {
 
 impl Object {
 
+    pub fn name(&self) -> &str {
+        self.name.as_str()
+    }
+
     /// All public services at current network level of the object.
     pub fn public_services(&self) -> &BTreeSet<Box<ServiceArch>> {
         &self.pubsrv
@@ -157,6 +172,58 @@ impl Object {
             Some(v) => Some(unsafe { &mut *(v as *const _ as *mut _) }),
             None    => None
         }
+    }
+}
+
+impl PartialEq for ObjectVector {
+
+    fn eq(&self, other: &ObjectVector) -> bool {
+        self.id == other.id
+    }
+}
+
+impl Eq for ObjectVector {}
+
+impl PartialOrd for ObjectVector {
+
+    fn partial_cmp(&self, other: &ObjectVector) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl ::std::borrow::Borrow<Object> for ObjectVector {
+
+    fn borrow(&self) -> &Object {
+        &self.obj
+    }
+}
+
+impl ::std::borrow::BorrowMut<Object> for ObjectVector {
+
+    fn borrow_mut(&mut self) -> &mut Object {
+        &mut self.obj
+    }
+}
+
+impl ObjectVector {
+
+    pub fn new(obj: Object, id: u32) -> Self {
+        ObjectVector { obj, id }
+    }
+
+    pub fn id(&self) -> u32 {
+        self.id
+    }
+
+    pub fn split_vector(self) -> (Object, u32) {
+        (self.obj, self.id)
+    }
+}
+
+impl Ord for ObjectVector {
+
+    fn cmp(&self, other: &ObjectVector) -> Ordering {
+        self.id.cmp(&other.id)
     }
 }
 
@@ -348,18 +415,18 @@ impl InterfaceVersion {
     }
 }
 
-impl PartialEq for ServiceNameWrap {
+impl PartialEq for NameWrap {
 
-    fn eq(&self, other: &ServiceNameWrap) -> bool {
+    fn eq(&self, other: &NameWrap) -> bool {
         unsafe { *self.0 == *other.0 }
     }
 }
 
-impl Eq for ServiceNameWrap {}
+impl Eq for NameWrap {}
 
-impl Ord for ServiceNameWrap {
+impl Ord for NameWrap {
 
-    fn cmp(&self, other: &ServiceNameWrap) -> Ordering {
+    fn cmp(&self, other: &NameWrap) -> Ordering {
         let reference = unsafe { &*self.0 };
         let otherref  = unsafe { &*other.0 };
 
@@ -367,14 +434,14 @@ impl Ord for ServiceNameWrap {
     }
 }
 
-impl PartialOrd for ServiceNameWrap {
+impl PartialOrd for NameWrap {
 
-    fn partial_cmp(&self, other: &ServiceNameWrap) -> Option<Ordering> {
+    fn partial_cmp(&self, other: &NameWrap) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl ::std::borrow::Borrow<String> for ServiceNameWrap {
+impl ::std::borrow::Borrow<String> for NameWrap {
 
     fn borrow(&self) -> &String {
         unsafe { &*self.0 }
