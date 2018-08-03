@@ -6,10 +6,7 @@ use std::collections::btree_map::Entry as BTreeMapEntry;
 /// Package path module.
 mod path;
 
-pub use self::path::Path;
-pub use self::path::PathConstructor;
-pub use self::path::PathIter;
-pub use self::path::PathNode;
+pub use self::path::*;
 
 pub type ServiceMapEntry<'a> = BTreeMapEntry<
         'a, NameWrap, Box<ServiceArch>>;
@@ -18,7 +15,7 @@ pub type ServiceMapEntry<'a> = BTreeMapEntry<
 /// and use it as
 /// readable reference. Used to avoid cloning strings in BTrees used to
 /// search services.
-struct NameWrap(*const String);
+pub struct NameWrap(*const String);
 
 /// The object of the network. Object contains services and subobjects.
 /// It can also implement some interfaces. It has some internal memory
